@@ -1,6 +1,6 @@
 package com.university.erp.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 public class DepartmentRequest {
@@ -8,10 +8,9 @@ public class DepartmentRequest {
     @NotBlank public String code;
     @NotBlank public String name;
     public String description;
-    public String hodName;
-    public String hodEmail;
-    public String hodPhone;
-    @NotNull @Min(0) public Integer totalSeats;
+    public String deanName;
+    public String deanEmail;
+    public String deanPhone;
     public List<String> programs;
     public String status;
 }

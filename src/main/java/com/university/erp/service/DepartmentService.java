@@ -30,10 +30,9 @@ public class DepartmentService {
             .code(req.code.toUpperCase())
             .name(req.name)
             .description(req.description)
-            .hodName(req.hodName)
-            .hodEmail(req.hodEmail)
-            .hodPhone(req.hodPhone)
-            .totalSeats(req.totalSeats)
+            .deanName(req.deanName)
+            .deanEmail(req.deanEmail)
+            .deanPhone(req.deanPhone)
             .programs(req.programs != null ? new ArrayList<>(req.programs) : new ArrayList<>())
             .status(req.status != null ? Department.Status.valueOf(req.status) : Department.Status.ACTIVE)
             .build();
@@ -67,10 +66,9 @@ public class DepartmentService {
 
         dept.setName(req.name);
         dept.setDescription(req.description);
-        dept.setHodName(req.hodName);
-        dept.setHodEmail(req.hodEmail);
-        dept.setHodPhone(req.hodPhone);
-        dept.setTotalSeats(req.totalSeats);
+        dept.setDeanName(req.deanName);
+        dept.setDeanEmail(req.deanEmail);
+        dept.setDeanPhone(req.deanPhone);
         dept.setPrograms(req.programs != null ? new ArrayList<>(req.programs) : new ArrayList<>());
         if (req.status != null) dept.setStatus(Department.Status.valueOf(req.status));
 

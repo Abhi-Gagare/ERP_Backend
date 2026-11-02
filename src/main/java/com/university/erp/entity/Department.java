@@ -24,17 +24,14 @@ public class Department {
     @Column(length = 2000)
     private String description;
 
-    @Column(length = 100)
-    private String hodName;
+    @Column(name = "dean_name", length = 100)
+    private String deanName;
 
-    @Column(length = 100)
-    private String hodEmail;
+    @Column(name = "dean_email", length = 100)
+    private String deanEmail;
 
-    @Column(length = 20)
-    private String hodPhone;
-
-    @Column(nullable = false)
-    private Integer totalSeats;
+    @Column(name = "dean_phone", length = 20)
+    private String deanPhone;
 
     @ElementCollection
     @CollectionTable(name = "program_offerings", joinColumns = @JoinColumn(name = "department_id"))

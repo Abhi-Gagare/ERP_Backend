@@ -13,7 +13,7 @@ public record DepartmentResponse(
     String deanName,
     String deanEmail,
     String deanPhone,
-    List<String> programs,
+    List<String> degrees,
     String status,
     OffsetDateTime createdAt,
     OffsetDateTime updatedAt
@@ -22,7 +22,7 @@ public record DepartmentResponse(
         return new DepartmentResponse(
             d.getId(), d.getCode(), d.getName(), d.getDescription(),
             d.getDeanName(), d.getDeanEmail(), d.getDeanPhone(),
-            d.getPrograms() == null ? List.of() : d.getPrograms(),
+            d.getDegrees() == null ? List.of() : d.getDegrees(),
             d.getStatus().name(),
             d.getCreatedAt(), d.getUpdatedAt()
         );

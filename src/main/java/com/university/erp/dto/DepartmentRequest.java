@@ -11,6 +11,6 @@ public class DepartmentRequest {
     public String deanName;
     public String deanEmail;
     public String deanPhone;
-    public List<String> programs;
+    public List<String> degrees;
     public String status;
 }

@@ -35,8 +35,8 @@ public class Department {
 
     @ElementCollection
     @CollectionTable(name = "program_offerings", joinColumns = @JoinColumn(name = "department_id"))
-    @Column(name = "program", length = 60)
-    private List<String> programs;
+    @Column(name = "degree", length = 60)
+    private List<String> degrees;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

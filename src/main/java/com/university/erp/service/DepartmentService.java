@@ -33,7 +33,7 @@ public class DepartmentService {
             .deanName(req.deanName)
             .deanEmail(req.deanEmail)
             .deanPhone(req.deanPhone)
-            .programs(req.programs != null ? new ArrayList<>(req.programs) : new ArrayList<>())
+            .degrees(req.degrees != null ? new ArrayList<>(req.degrees) : new ArrayList<>())
             .status(req.status != null ? Department.Status.valueOf(req.status) : Department.Status.ACTIVE)
             .build();
 
@@ -69,7 +69,7 @@ public class DepartmentService {
         dept.setDeanName(req.deanName);
         dept.setDeanEmail(req.deanEmail);
         dept.setDeanPhone(req.deanPhone);
-        dept.setPrograms(req.programs != null ? new ArrayList<>(req.programs) : new ArrayList<>());
+        dept.setDegrees(req.degrees != null ? new ArrayList<>(req.degrees) : new ArrayList<>());
         if (req.status != null) dept.setStatus(Department.Status.valueOf(req.status));
 
         return DepartmentResponse.from(repo.save(dept));

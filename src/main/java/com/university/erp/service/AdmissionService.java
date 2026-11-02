@@ -38,7 +38,6 @@ public class AdmissionService {
             .pincode(req.pincode())
             .nationality(req.nationality())
             .program(req.program())
-            .department(req.department())
             .semester(req.semester())
             .batchYear(req.batchYear())
             .prevSchool(req.prevSchool())

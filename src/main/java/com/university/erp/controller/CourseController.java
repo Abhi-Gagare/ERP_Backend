@@ -24,11 +24,11 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<Page<CourseResponse>> list(
         @RequestParam(defaultValue = "") String search,
-        @RequestParam(defaultValue = "") String department,
+        @RequestParam(defaultValue = "") String program,
         @RequestParam(defaultValue = "") String status,
         @RequestParam(defaultValue = "0") int page
     ) {
-        return ResponseEntity.ok(courseService.list(search, department, status, page));
+        return ResponseEntity.ok(courseService.list(search, program, status, page));
     }
 
     @GetMapping("/{courseCode}")

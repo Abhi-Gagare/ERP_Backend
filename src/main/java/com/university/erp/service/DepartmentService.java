@@ -22,9 +22,9 @@ public class DepartmentService {
     @Transactional
     public DepartmentResponse create(DepartmentRequest req) {
         if (repo.existsByCode(req.code.toUpperCase()))
-            throw new IllegalArgumentException("Department code already exists: " + req.code);
+            throw new IllegalArgumentException("Program code already exists: " + req.code);
         if (repo.existsByName(req.name))
-            throw new IllegalArgumentException("Department name already exists: " + req.name);
+            throw new IllegalArgumentException("Program name already exists: " + req.name);
 
         Department dept = Department.builder()
             .code(req.code.toUpperCase())
@@ -55,7 +55,7 @@ public class DepartmentService {
             .filter(d -> d.getCode().equalsIgnoreCase(code))
             .findFirst()
             .map(DepartmentResponse::from)
-            .orElseThrow(() -> new NoSuchElementException("Department not found: " + code));
+            .orElseThrow(() -> new NoSuchElementException("Program not found: " + code));
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class DepartmentService {
         Department dept = repo.findAll().stream()
             .filter(d -> d.getCode().equalsIgnoreCase(code))
             .findFirst()
-            .orElseThrow(() -> new NoSuchElementException("Department not found: " + code));
+            .orElseThrow(() -> new NoSuchElementException("Program not found: " + code));
 
         dept.setName(req.name);
         dept.setDescription(req.description);
@@ -82,7 +82,7 @@ public class DepartmentService {
         Department dept = repo.findAll().stream()
             .filter(d -> d.getCode().equalsIgnoreCase(code))
             .findFirst()
-            .orElseThrow(() -> new NoSuchElementException("Department not found: " + code));
+            .orElseThrow(() -> new NoSuchElementException("Program not found: " + code));
         repo.delete(dept);
     }
 }

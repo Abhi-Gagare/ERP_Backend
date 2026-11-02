@@ -95,7 +95,7 @@ public class FeeService {
 
     public record AdmissionSummary(
         String admissionId, String studentName, String program,
-        String department, String status, String createdAt,
+        String status, String createdAt,
         long feeCount, java.math.BigDecimal totalBilled, java.math.BigDecimal totalPaid
     ) {}
 
@@ -105,7 +105,7 @@ public class FeeService {
         return noFee.stream().map(a -> new AdmissionSummary(
             a.getAdmissionId(),
             a.getFirstName() + " " + a.getLastName(),
-            a.getProgram(), a.getDepartment(),
+            a.getProgram(),
             a.getStatus().name(),
             a.getCreatedAt().toLocalDate().toString(),
             feeRepo.countByAdmission_AdmissionId(a.getAdmissionId()),

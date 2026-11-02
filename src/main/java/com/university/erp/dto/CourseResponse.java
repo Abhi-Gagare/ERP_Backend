@@ -12,7 +12,6 @@ public record CourseResponse(
     String courseCode,
     String name,
     String description,
-    String department,
     String program,
     Integer credits,
     Integer durationMonths,
@@ -44,7 +43,7 @@ public record CourseResponse(
 
         return new CourseResponse(
             c.getId(), c.getCourseCode(), c.getName(), c.getDescription(),
-            c.getDepartment(), c.getProgram(), c.getCredits(), c.getDurationMonths(),
+            c.getProgram(), c.getCredits(), c.getDurationMonths(),
             c.getLevel(), c.getMode(), c.getTotalSeats(), c.getAvailableSeats(),
             c.getStatus().name(), components, perSem, perYear, oneTime,
             c.getCreatedAt(), c.getUpdatedAt()

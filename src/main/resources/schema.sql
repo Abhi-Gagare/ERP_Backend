@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS students (
     id              BIGSERIAL PRIMARY KEY,
     user_id         BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     roll_number     VARCHAR(50) NOT NULL UNIQUE,
-    department      VARCHAR(100) NOT NULL,
     program         VARCHAR(100) NOT NULL,
     semester        SMALLINT NOT NULL CHECK (semester BETWEEN 1 AND 12),
     batch_year      SMALLINT NOT NULL,
@@ -64,7 +63,7 @@ CREATE INDEX IF NOT EXISTS idx_users_role        ON users(role);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_user   ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_students_roll     ON students(roll_number);
-CREATE INDEX IF NOT EXISTS idx_students_dept     ON students(department);
+CREATE INDEX IF NOT EXISTS idx_students_program  ON students(program);
 
 -- Default permissions
 INSERT INTO permissions (name, description) VALUES

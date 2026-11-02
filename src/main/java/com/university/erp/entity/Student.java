@@ -23,9 +23,6 @@ public class Student {
     private String rollNumber;
 
     @Column(nullable = false, length = 100)
-    private String department;
-
-    @Column(nullable = false, length = 100)
     private String program;
 
     @Column(nullable = false)

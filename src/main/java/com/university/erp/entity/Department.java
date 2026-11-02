@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "departments")
+@Table(name = "programs")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Department {
 
@@ -37,7 +37,7 @@ public class Department {
     private Integer totalSeats;
 
     @ElementCollection
-    @CollectionTable(name = "department_programs", joinColumns = @JoinColumn(name = "department_id"))
+    @CollectionTable(name = "program_offerings", joinColumns = @JoinColumn(name = "department_id"))
     @Column(name = "program", length = 60)
     private List<String> programs;
 

@@ -30,7 +30,6 @@ public class CourseService {
             .courseCode(req.courseCode.toUpperCase())
             .name(req.name)
             .description(req.description)
-            .department(req.department)
             .program(req.program)
             .credits(req.credits)
             .durationMonths(req.durationMonths)
@@ -57,11 +56,11 @@ public class CourseService {
         return CourseResponse.from(courseRepo.save(course));
     }
 
-    public Page<CourseResponse> list(String search, String department, String status, int page) {
+    public Page<CourseResponse> list(String search, String program, String status, int page) {
         Course.Status st = (status != null && !status.isBlank()) ? Course.Status.valueOf(status) : null;
         return courseRepo.search(
             search == null ? "" : search,
-            department == null ? "" : department,
+            program == null ? "" : program,
             st,
             PageRequest.of(page, 20)
         ).map(CourseResponse::from);
@@ -84,7 +83,6 @@ public class CourseService {
 
         course.setName(req.name);
         course.setDescription(req.description);
-        course.setDepartment(req.department);
         course.setProgram(req.program);
         course.setCredits(req.credits);
         course.setDurationMonths(req.durationMonths);

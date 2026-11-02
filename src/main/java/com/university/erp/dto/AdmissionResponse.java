@@ -19,7 +19,6 @@ public record AdmissionResponse(
     String          pincode,
     String          nationality,
     String          program,
-    String          department,
     Short           semester,
     Short           batchYear,
     String          prevSchool,
@@ -40,7 +39,7 @@ public record AdmissionResponse(
             a.getDateOfBirth() != null ? a.getDateOfBirth().toString() : null,
             a.getGender(), a.getEmail(), a.getPhone(),
             a.getAddress(), a.getCity(), a.getState(), a.getPincode(), a.getNationality(),
-            a.getProgram(), a.getDepartment(), a.getSemester(), a.getBatchYear(),
+            a.getProgram(), a.getSemester(), a.getBatchYear(),
             a.getPrevSchool(), a.getPrevBoard(), a.getPrevYear(), a.getPrevPercentage(),
             a.getGuardianName(), a.getGuardianRelation(), a.getGuardianPhone(), a.getGuardianEmail(),
             a.getStatus(), a.getCreatedAt()

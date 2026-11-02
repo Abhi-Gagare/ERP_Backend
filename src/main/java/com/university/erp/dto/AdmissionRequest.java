@@ -15,7 +15,6 @@ public record AdmissionRequest(
     String pincode,
     String nationality,
     @NotBlank String program,
-    @NotBlank String department,
     @NotNull  Short  semester,
     @NotNull  Short  batchYear,
     String prevSchool,

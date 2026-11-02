@@ -16,17 +16,16 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         WHERE (:search = '' OR
             LOWER(c.name)       LIKE LOWER(CONCAT('%',:search,'%')) OR
             LOWER(c.courseCode) LIKE LOWER(CONCAT('%',:search,'%')) OR
-            LOWER(c.department) LIKE LOWER(CONCAT('%',:search,'%')) OR
             LOWER(c.program)    LIKE LOWER(CONCAT('%',:search,'%'))
         )
-        AND (:department = '' OR LOWER(c.department) = LOWER(:department))
+        AND (:program = '' OR LOWER(c.program) = LOWER(:program))
         AND (:status IS NULL OR c.status = :status)
         ORDER BY c.createdAt DESC
         """)
     Page<Course> search(
-        @Param("search")     String search,
-        @Param("department") String department,
-        @Param("status")     Course.Status status,
+        @Param("search")  String search,
+        @Param("program") String program,
+        @Param("status")  Course.Status status,
         Pageable pageable
     );
 }

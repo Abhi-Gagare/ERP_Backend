@@ -25,11 +25,8 @@ public class Course {
     @Column(length = 2000)
     private String description;
 
-    @Column(nullable = false, length = 60)
-    private String department;
-
-    @Column(nullable = false, length = 40)
-    private String program;   // B.Tech, MBA, etc.
+    @Column(nullable = false, length = 100)
+    private String program;
 
     @Column(nullable = false)
     private Integer credits;

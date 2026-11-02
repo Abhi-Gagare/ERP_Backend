@@ -10,7 +10,6 @@ public class CourseRequest {
     @NotBlank public String courseCode;
     @NotBlank public String name;
     public String description;
-    @NotBlank public String department;
     @NotBlank public String program;
     @NotNull @Min(1) public Integer credits;
     @NotNull @Min(1) public Integer durationMonths;

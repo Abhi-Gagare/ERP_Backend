@@ -14,6 +14,7 @@ com/university/erp/entity/Course.class
 com/university/erp/exception/GlobalExceptionHandler.class
 com/university/erp/dto/CourseResponse$FeeComponent.class
 com/university/erp/repository/PermissionRepository.class
+com/university/erp/controller/StudentController.class
 com/university/erp/entity/AuditLog.class
 com/university/erp/service/AuditLogService.class
 com/university/erp/config/DataSeeder.class
@@ -26,6 +27,7 @@ com/university/erp/entity/Course$Status.class
 com/university/erp/entity/Permission.class
 com/university/erp/repository/FeeRepository.class
 com/university/erp/entity/CourseFeeComponent$CourseFeeComponentBuilder.class
+com/university/erp/service/StudentService.class
 com/university/erp/dto/RegisterRequest.class
 com/university/erp/entity/Fee$FeeBuilder.class
 com/university/erp/dto/DepartmentResponse.class
@@ -47,6 +49,7 @@ com/university/erp/entity/Student.class
 com/university/erp/repository/DepartmentRepository.class
 com/university/erp/repository/AdmissionRepository.class
 com/university/erp/entity/AuditLog$AuditLogBuilder.class
+com/university/erp/dto/StudentResponse.class
 com/university/erp/service/FeeService$AdmissionSummary.class
 com/university/erp/entity/Course$CourseBuilder.class
 com/university/erp/dto/CourseResponse.class

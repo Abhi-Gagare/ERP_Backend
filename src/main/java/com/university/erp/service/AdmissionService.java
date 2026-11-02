@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 public class AdmissionService {
 
     private final AdmissionRepository repo;
+    private final StudentService studentService;
 
     @Transactional
     public AdmissionResponse create(AdmissionRequest req) {
@@ -76,7 +77,11 @@ public class AdmissionService {
         Admission a = repo.findByAdmissionId(admissionId)
             .orElseThrow(() -> new NoSuchElementException("Admission not found: " + admissionId));
         a.setStatus(status);
-        return AdmissionResponse.from(repo.save(a));
+        Admission saved = repo.save(a);
+        if (status == Admission.Status.APPROVED) {
+            studentService.provisionFromAdmission(saved);
+        }
+        return AdmissionResponse.from(saved);
     }
 
     private String generateAdmissionId() {

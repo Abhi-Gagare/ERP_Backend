@@ -16,6 +16,26 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     Optional<Attendance> findByStudentIdAndSubjectCodeAndDateAndTimeSlot(
         Long studentId, String subjectCode, LocalDate date, String timeSlot);
 
+    /** Distinct (date, subjectCode, subjectName, timeSlot) sessions for a program/batch, latest first */
+    @Query(value = """
+        SELECT DISTINCT a.date, a.subject_code, a.subject_name, a.time_slot,
+               COUNT(CASE WHEN a.status='PRESENT' THEN 1 END) OVER w AS present_count,
+               COUNT(CASE WHEN a.status='ABSENT'  THEN 1 END) OVER w AS absent_count,
+               COUNT(*)                                        OVER w AS total_count
+        FROM attendance a
+        JOIN students s ON s.id = a.student_id
+        WHERE s.program = :program
+          AND (CAST(:batchYear AS smallint) IS NULL OR s.batch_year = CAST(:batchYear AS smallint))
+        WINDOW w AS (PARTITION BY a.date, a.subject_code, a.time_slot)
+        ORDER BY a.date DESC, a.time_slot
+        LIMIT :limit
+        """, nativeQuery = true)
+    List<Object[]> findRecentSessions(
+        @Param("program") String program,
+        @Param("batchYear") Short batchYear,
+        @Param("limit") int limit
+    );
+
     @Query("""
         SELECT a FROM Attendance a JOIN a.student s
         WHERE s.program = :program

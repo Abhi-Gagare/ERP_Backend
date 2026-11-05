@@ -5,10 +5,13 @@
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Student.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/RegisterRequest.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/SubjectRepository.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/TimetableSlot.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/service/DepartmentService.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/AttendanceRequest.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/AuthResponse.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/TimetableRepository.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/service/SubjectService.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/controller/TimetableController.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/CourseRepository.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/security/JwtService.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/controller/FeeController.java
@@ -29,6 +32,7 @@
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Admission.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Subject.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/AttendanceResponse.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/service/TimetableService.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/SubjectRequest.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Department.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/RefreshTokenRequest.java
@@ -38,6 +42,8 @@
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/AdmissionResponse.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/service/AuthService.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Permission.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/AttendanceSessionSummary.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Timetable.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/AttendanceRepository.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/exception/ConflictException.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/StudentRepository.java
@@ -52,6 +58,7 @@
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/service/UserDetailsServiceImpl.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/CourseFeeComponent.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/AdmissionRepository.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/TimetableRequest.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/ErpApplication.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/StudentResponse.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/config/SecurityConfig.java
@@ -60,5 +67,6 @@
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/repository/FeeRepository.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/config/DataSeeder.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/controller/CourseController.java
+/Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/dto/TimetableResponse.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/entity/Fee.java
 /Users/yuvivikhe/Desktop/erp/university-erp-backend/src/main/java/com/university/erp/controller/StudentController.java

@@ -2,6 +2,7 @@ package com.university.erp.service;
 
 import com.university.erp.dto.AttendanceRequest;
 import com.university.erp.dto.AttendanceResponse;
+import com.university.erp.dto.AttendanceSessionSummary;
 import com.university.erp.entity.Attendance;
 import com.university.erp.entity.Student;
 import com.university.erp.repository.AttendanceRepository;
@@ -54,8 +55,28 @@ public class AttendanceService {
             .stream().map(AttendanceResponse::from).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<AttendanceSessionSummary> recentSessions(String program, Short batchYear, int limit) {
+        return attendanceRepo.findRecentSessions(program, batchYear, limit)
+            .stream().map(row -> new AttendanceSessionSummary(
+                ((java.sql.Date) row[0]).toLocalDate(),
+                (String) row[1],
+                (String) row[2],
+                (String) row[3],
+                toLong(row[4]),
+                toLong(row[5]),
+                toLong(row[6])
+            )).toList();
+    }
+
     public record AttendanceSummary(Long studentId, String rollNumber, String name,
                                     long present, long total, double percentage) {}
+
+    private static long toLong(Object v) {
+        if (v instanceof Long   l) return l;
+        if (v instanceof Number n) return n.longValue();
+        return 0L;
+    }
 
     @Transactional(readOnly = true)
     public List<AttendanceSummary> getSummaryForBatch(String program, Short batchYear, String subjectCode) {

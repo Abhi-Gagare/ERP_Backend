@@ -2,6 +2,7 @@ package com.university.erp.controller;
 
 import com.university.erp.dto.AttendanceRequest;
 import com.university.erp.dto.AttendanceResponse;
+import com.university.erp.dto.AttendanceSessionSummary;
 import com.university.erp.service.AttendanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class AttendanceController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam String timeSlot) {
         return attendanceService.getSession(program, batchYear, subjectCode, date, timeSlot);
+    }
+
+    @GetMapping("/recent-sessions")
+    public List<AttendanceSessionSummary> recentSessions(
+            @RequestParam String program,
+            @RequestParam(required = false) Short batchYear,
+            @RequestParam(defaultValue = "30") int limit) {
+        return attendanceService.recentSessions(program, batchYear, limit);
     }
 
     @GetMapping("/summary")

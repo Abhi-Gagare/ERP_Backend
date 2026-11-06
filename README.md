@@ -3,9 +3,9 @@
 Java 21 / Spring Boot 3.2.5 REST API with Spring Security, JWT, PostgreSQL,
 Spring Data JPA and SMTP mail. Build with Maven 3.9+.
 
-Includes the existing academic/admission/student/fee modules, Accountant portal
-access and financial overview, Admin user invitations and encrypted SMTP profiles.
-Additional Accountant feature screens are placeholders in the frontend.
+Includes academic/admission/student modules, Admin user invitations and encrypted
+SMTP profiles, plus Accountant fee management, collections, concessions, refunds,
+approvals and operating income/expenses. See ACCOUNTANT_SETUP.md for scope.
 
 ## Configuration
 

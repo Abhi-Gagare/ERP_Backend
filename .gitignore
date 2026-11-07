@@ -1,4 +1,21 @@
 /target/
+/.runtime/
 .env*
-hs_err_pid*.log
-replay_pid*.log
+*.log
+*.pem
+*.key
+*.dump
+*.backup
+
+# Local testing/presentation material and editor files
+[Gg][Uu][Ii][Dd][Ee].[Mm][Dd]
+ACCOUNTANT_DEMO_GUIDE.md
+/.idea/
+/.vscode/
+*.iml
+*.class
+*.tmp
+*.swp
+Thumbs.db
+.DS_Store
+/coverage/

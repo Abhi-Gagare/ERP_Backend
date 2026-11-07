@@ -18,13 +18,90 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({FinanceOverviewController.class, AuthController.class, com.university.erp.controller.finance.AccountantFeeController.class,com.university.erp.controller.finance.FeeStructureController.class,com.university.erp.controller.finance.BulkFeeAssignmentController.class,com.university.erp.controller.finance.FeeCollectionController.class,com.university.erp.controller.finance.FeeFollowupController.class,com.university.erp.controller.finance.ScholarshipController.class,com.university.erp.controller.finance.AwardApprovalController.class,com.university.erp.controller.finance.FeeRefundController.class,com.university.erp.controller.finance.OperatingFinanceController.class})
+@WebMvcTest({FinanceOverviewController.class, AuthController.class, com.university.erp.controller.finance.AccountantFeeController.class,com.university.erp.controller.finance.FeeStructureController.class,com.university.erp.controller.finance.BulkFeeAssignmentController.class,com.university.erp.controller.finance.FeeCollectionController.class,com.university.erp.controller.finance.FeeFollowupController.class,com.university.erp.controller.finance.ScholarshipController.class,com.university.erp.controller.finance.AwardApprovalController.class,com.university.erp.controller.finance.FeeRefundController.class,com.university.erp.controller.finance.OperatingFinanceController.class,com.university.erp.controller.finance.GeneralLedgerController.class,com.university.erp.controller.finance.BudgetController.class,com.university.erp.controller.finance.DisbursementController.class,com.university.erp.controller.finance.PayrollSetupController.class,com.university.erp.controller.finance.FinanceReportsController.class,com.university.erp.controller.finance.AccountantSettingsController.class,com.university.erp.controller.finance.FinanceActivityController.class})
 @Import({SecurityConfig.class, JwtAuthFilter.class})
 class AccountantAccessTest {
+    @MockBean com.university.erp.service.finance.FinanceReportDetailsService reportDetails;
+    @MockBean com.university.erp.service.finance.FinanceReportsService reports;
+    @Test void reportsAreFinanceOnlyAndReadOnly() throws Exception {
+        String path="/api/finance/reports?from=2026-01-01&until=2026-12-31";
+        for(String role:new String[]{"STUDENT","FACULTY"})mvc.perform(get("/api/finance/reports/details?section=balances&from=2026-01-01&until=2026-12-31").with(user("other").roles(role))).andExpect(status().isForbidden());
+        mvc.perform(get(path)).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"})mvc.perform(get(path).with(user("other").roles(role))).andExpect(status().isForbidden());
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get(path).with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(get("/api/finance/reports").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+        mvc.perform(post(path).with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isMethodNotAllowed());
+    }
+    @MockBean com.university.erp.service.finance.AccountantSettingsService accountantSettings;
+    @Test void settingsRequireFinanceRoleAndValidPreferences() throws Exception {
+        mvc.perform(get("/api/finance/settings")).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"}){
+            mvc.perform(get("/api/finance/settings").with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(put("/api/finance/settings").with(user("other").roles(role))).andExpect(status().isForbidden());
+        }
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get("/api/finance/settings").with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(put("/api/finance/settings").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());
+        mvc.perform(put("/api/finance/settings").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{\"reportPeriod\":\"BAD\",\"reportSection\":\"collections\",\"version\":0}")).andExpect(status().isBadRequest());
+    }
+    @MockBean com.university.erp.service.finance.FinanceActivityService activity;
+    @Test void activityIsFinanceOnlyAndReadOnly() throws Exception {
+        String path="/api/finance/activity?from=2026-01-01&until=2026-12-31";
+        mvc.perform(get(path)).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"})mvc.perform(get(path).with(user("other").roles(role))).andExpect(status().isForbidden());
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get(path).with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(delete(path).with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isMethodNotAllowed());
+        mvc.perform(get("/api/finance/activity").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+        mvc.perform(post("/api/finance/settings/password").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());
+    }
     @Autowired MockMvc mvc;
     @MockBean JwtService jwtService;
     @MockBean UserDetailsService userDetailsService;
     @MockBean FeeService feeService;
+    @MockBean com.university.erp.service.finance.PayrollSetupService payrollSetup;
+    @Test void payrollSetupRequiresFinanceRoleAndValidatedInputs() throws Exception {
+        mvc.perform(get("/api/finance/payroll/salaries")).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"}){
+            for(String path:new String[]{"/salaries","/profiles/1","/snapshots/00000000-0000-0000-0000-000000000001"})mvc.perform(get("/api/finance/payroll"+path).with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(post("/api/finance/payroll/profiles/1/generate").with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(put("/api/finance/payroll/profiles/1").with(user("other").roles(role))).andExpect(status().isForbidden());
+        }
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get("/api/finance/payroll/salaries").with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(post("/api/finance/payroll/salaries").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/finance/payroll/salaries?page=-1").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+    }
+    @MockBean com.university.erp.service.finance.DisbursementService disbursements;
+    @Test void payrollVendorAccessIsFinanceOnly() throws Exception {
+        mvc.perform(get("/api/finance/disbursements/staff")).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"}){
+            for(String path:new String[]{"/staff","/vendors","/PAYROLL/payments","/VENDOR/payments"})mvc.perform(get("/api/finance/disbursements"+path).with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(post("/api/finance/disbursements/PAYROLL/payments").with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(post("/api/finance/disbursements/VENDOR/payments/00000000-0000-0000-0000-000000000001/settlement").with(user("other").roles(role))).andExpect(status().isForbidden());
+        }
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get("/api/finance/disbursements/vendors").with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(post("/api/finance/disbursements/PAYROLL/payments").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/finance/disbursements/VENDOR/payments?page=-1").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+    }
+    @MockBean com.university.erp.service.finance.BudgetService budgets;
+    @Test void budgetsRequireFinanceRoleAndValidPlans() throws Exception {
+        mvc.perform(get("/api/finance/budgets")).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"}){
+            mvc.perform(get("/api/finance/budgets").with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(post("/api/finance/budgets").with(user("other").roles(role))).andExpect(status().isForbidden());
+            mvc.perform(post("/api/finance/budgets/00000000-0000-0000-0000-000000000001/review").with(user("other").roles(role))).andExpect(status().isForbidden());
+        }
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})mvc.perform(get("/api/finance/budgets").with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(post("/api/finance/budgets").with(user("staff").roles("ACCOUNTANT")).contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/finance/budgets?page=-1").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+    }
+    @MockBean com.university.erp.service.finance.GeneralLedgerService ledger;
+    @Test void generalLedgerIsFinanceOnlyAndReadOnly() throws Exception {
+        mvc.perform(get("/api/finance/ledger/journals")).andExpect(status().isUnauthorized());
+        for(String role:new String[]{"STUDENT","FACULTY"})for(String path:new String[]{"/journals","/trial-balance","/accounts","/accounts/1000"})mvc.perform(get("/api/finance/ledger"+path).with(user("other").roles(role))).andExpect(status().isForbidden());
+        for(String role:new String[]{"ADMIN","ACCOUNTANT"})for(String path:new String[]{"/journals","/trial-balance","/accounts","/accounts/1000"})mvc.perform(get("/api/finance/ledger"+path).with(user("staff").roles(role))).andExpect(status().isOk());
+        mvc.perform(get("/api/finance/ledger/journals?page=-1").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/finance/ledger/accounts/invalid").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isBadRequest());
+        mvc.perform(post("/api/finance/ledger/journals").with(user("staff").roles("ACCOUNTANT"))).andExpect(status().isMethodNotAllowed());
+    }
     @MockBean com.university.erp.service.finance.OperatingFinanceService operations;
     @Test void operatingRegisterRequiresFinanceRoleAndVerifiedSettlement() throws Exception {
         mvc.perform(get("/api/finance/operations")).andExpect(status().isUnauthorized());

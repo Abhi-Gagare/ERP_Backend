@@ -50,12 +50,17 @@ public class OperatingFinanceService {
     private String hash(Object value){try{return HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(value)));}catch(Exception e){throw new IllegalArgumentException("Invalid operating entry");}}
     private Map<String,Object> publicRow(Map<String,Object> row){var result=new LinkedHashMap<>(row);result.remove("request_hash");result.remove("settlement_hash");return result;}
     @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
-    public Worklist list(String search,String direction,String status,LocalDate from,LocalDate until,int page){
+    public Worklist list(String search,String direction,String status,LocalDate from,LocalDate until,int page){return listCategory(search,direction,status,from,until,page,"");}
+    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
+    public Worklist vendorPayments(String search,String status,int page){return listCategory(search,"EXPENSE",status,null,null,page,"VENDOR");}
+    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
+    public Worklist payrollPayments(String search,String status,int page){return listCategory(search,"EXPENSE",status,null,null,page,"PAYROLL");}
+    private Worklist listCategory(String search,String direction,String status,LocalDate from,LocalDate until,int page,String dedicated){
         if(!Set.of("","INCOME","EXPENSE").contains(direction))throw new IllegalArgumentException("Invalid direction");
         if(!Set.of("","PENDING","APPROVED","REJECTED","CANCELLED","SETTLED").contains(status))throw new IllegalArgumentException("Invalid entry status");
         if(from!=null&&until!=null&&until.isBefore(from))throw new IllegalArgumentException("End date must be on or after start date");
         var p=new MapSqlParameterSource("search","%"+search.trim()+"%").addValue("direction",direction).addValue("status",status).addValue("offset",page*20L);
-        String where=" WHERE (:direction='' OR direction=:direction) AND (:status='' OR status=:status) AND (counterparty ILIKE :search OR document_reference ILIKE :search OR coalesce(settlement_reference,'') ILIKE :search) ";
+        String where=" WHERE "+(dedicated.equals("VENDOR")?"vendor_id IS NOT NULL":dedicated.equals("PAYROLL")?"staff_user_id IS NOT NULL":"vendor_id IS NULL AND staff_user_id IS NULL")+" AND (:direction='' OR direction=:direction) AND (:status='' OR status=:status) AND (counterparty ILIKE :search OR document_reference ILIKE :search OR coalesce(settlement_reference,'') ILIKE :search) ";
         if(from!=null){where+=" AND document_date>=:from";p.addValue("from",java.sql.Date.valueOf(from));}
         if(until!=null){where+=" AND document_date<=:until";p.addValue("until",java.sql.Date.valueOf(until));}
         var totals=jdbc.queryForObject("""
@@ -73,6 +78,14 @@ public class OperatingFinanceService {
     }
     @Transactional public Map<String,Object> create(Input input,String actor){
         validate(input,today());
+        return persist(input,actor);
+    }
+    @Transactional public Map<String,Object> createDisbursement(Input input,String actor){
+        if(!input.direction().equals("EXPENSE")||!Set.of("VENDOR_PAYMENT","PAYROLL").contains(input.category()))throw new IllegalArgumentException("Invalid vendor payment category");
+        if(input.documentDate().isAfter(today()))throw new IllegalArgumentException("Invoice date cannot be in the future");
+        return persist(input,actor);
+    }
+    private Map<String,Object> persist(Input input,String actor){
         String fingerprint=hash(List.of(input.direction(),input.category(),input.counterparty().trim(),input.documentReference().trim(),input.documentDate(),input.amount().stripTrailingZeros().toPlainString(),input.description().trim()));
         var p=new MapSqlParameterSource("request",input.requestId()).addValue("hash",fingerprint).addValue("actor",actor).addValue("id",UUID.randomUUID())
             .addValue("direction",input.direction()).addValue("category",input.category()).addValue("party",input.counterparty().trim()).addValue("reference",input.documentReference().trim())
@@ -90,6 +103,7 @@ public class OperatingFinanceService {
     }
     @Transactional public Map<String,Object> review(UUID id,Review input,String actor){
         var rows=jdbc.queryForList("SELECT * FROM finance_operating_entries WHERE id=:id FOR UPDATE",Map.of("id",id));if(rows.isEmpty())throw new NoSuchElementException("Operating entry not found");var entry=rows.get(0);
+        if(entry.get("staff_user_id")!=null&&!input.status().equals("CANCELLED")&&Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM users WHERE id=:staff AND email=:actor)",Map.of("staff",entry.get("staff_user_id"),"actor",actor),Boolean.class)))throw new ConflictException("The payroll beneficiary cannot review their own payout");
         if(input.status().equals(entry.get("status"))&&actor.equals(entry.get("reviewed_by"))&&input.note().trim().equals(entry.get("review_note")))return detail(id);
         validateReview((String)entry.get("status"),(String)entry.get("created_by"),actor,input);
         jdbc.update("UPDATE finance_operating_entries SET status=:status,reviewed_by=:actor,reviewed_at=now(),review_note=:note WHERE id=:id",Map.of("id",id,"status",input.status(),"actor",actor,"note",input.note().trim()));return detail(id);
